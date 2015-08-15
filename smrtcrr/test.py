@@ -25,39 +25,16 @@ def get_coursera(path):
 
 coursera_link = get_coursera('coursera.csv')
 
-#professions = {
-#  "Java developer": ["Java", "Algorithms", "Probability theory", "JVM". "OOP"],
-#  "Database Administrator": ["Databases", "Logical thinking", "Probability theory", "DBMS"], 
-#  "Project manager": ["Algorithms", "Leadership"],
-#  "Back-end developer": ["PHP", "JavaScript", "Python", "Node.js"],
-#  "Front-end developer": ["CSS", "HTML", "JavaScript". "Design"],
-#  "Web-designer": ["Photoshop", "CSS", "Paint", "HTML"],
-#  "IOS developer": ["Algorithms", "Swift", "Objective-C", "IOS"],
-#  "C# developer": ["C#", "Algorithms", "Probability theory", "ASP.NET"],
-#  "Android developer": ["Java", "XML", "Android", "Algorithms"],
-#  "Embedded developer": ["C", "Embedded", "Linux", "Algorithms", "Operating System"],
-#  "Business Analyst": ["Analysis", "Optimisation", "Data Mining", "Optimizations", "Risk Analytics"],
-#  "Graphic Design" :["infotech,arts",  "Adobe Acrobat Adobe Creative Suite  Flash Illustrator InDesign  Photoshop Aesthetics  Analytical Skills Creativity Skills CSS Dreamweaver Microsoft Excel HTML  Layout  Creative Writing  Typography
-#}
-
-#links = {
-#  "Java developer": "https://www.youtube.com/playlist?list=PLBD5381FE500534C0",
-#  "Database Administrator": "https://www.youtube.com/watch?v=dMkwFzRgxZY",
-#  "Project manager" : "https://www.oppmi.com/project-management-training-videos.cfm",
-#  "Back-end developer" : "https://www.youtube.com/watch?v=HYMvYYOhuYU",
-#  "Front-end developer": "https://www.youtube.com/watch?v=Lsg84NtJbmI" ,
-#  "Web-designer": "https://www.youtube.com/user/GoogleWebDesigner",
-#  "IOS developer": "https://www.youtube.com/watch?v=mDgNwmHMaDo&list=PLnxBrInqFEs4d3SwS7HctEgg9Rhwe0tZT",
-#  "C# developer": "https://www.youtube.com/watch?v=I7kDw0VbavQ&list=PL8DF7EE1104C11862",
-#  "Android developer": "https://www.youtube.com/watch?v=SUOWNXGRc6g&list=PL2F07DBCDCC01493A",
-#  "Embedded developer": "https://www.youtube.com/watch?v=uLD6dRim67A&list=PLX8CzqL3ArzXUvzzRdfuS-Dc50Hy0hpmR",
-#  "Business Analyst": "https://www.youtube.com/watch?v=wHwfsH4WLD0",
-#}
-
-#link_name = "https://ua.linkedin.com/pub/anastasiia-matviichuk/103/895/aa7"
+#without skills, public link:
+#link_name = "https://ua.linkedin.com/pub/anastasiia-matviichuk/103/895/aa7" 
+#with skills, public link:
 #link_name = "https://ca.linkedin.com/in/romanko"
+#no access, local link:
+#link_name = "https://www.linkedin.com/profile/view?id=AAIAAAiuDSYBeO6kwAcbQL_Me5u61Fl8vZk3W54&trk=nav_responsive_tab_profile_pic" # Vitalii
+#another wab page:
 #link_name = "https://vk.com"
-link_name = "https://www.linkedin.com/profile/view?id=AAEAAAC19LgByHNr7FNDMhGz3de_IP1aj_JaA3o&authType=name&authToken=oyiR&trk=prof-sb-browse_map-name"
+#with skills, local link:
+link_name = "https://www.linkedin.com/profile/view?id=AAEAAAC19LgByHNr7FNDMhGz3de_IP1aj_JaA3o&authType=name&authToken=oyiR&trk=prof-sb-browse_map-name" # Romanko local
 #link_name = "https://ca.linkedin.com/pub/kyle-macdonald/46/ba0/5b"
 
 class Crawler:
@@ -78,20 +55,11 @@ class Crawler:
           exit(0)
         return result
 
-    def get_local_link(self, url):
-      print 'Mi-mi'
+    def login(self):
       # parser = linkedinlogin.LinkedInParser(username, password)
       cj = cookielib.MozillaCookieJar(linkedinlogin.cookie_filename)
       cj.load()
       self._br.set_cookiejar(cj)
-      content = self._br.open(url).read()
-      result = map(lambda x: x.text.encode('utf-8'),
-        BeautifulSoup(content, 'html.parser').find_all('a', 'view-public-profile'))
-      if result == []:
-       #  raise ValueError("No skills found")
-        print 'No public link found'
-        exit(0)
-      return result[0]
 
 
 def get_profession(skills):
@@ -113,8 +81,7 @@ if __name__ == '__main__':
   crawler = Crawler()
   if "linkedin" in link_name:
     if "profile/view" in link_name:
-      #function found not locat link
-      link_name = crawler.get_local_link(link_name)
+      crawler.login()
     profs = get_profession(crawler.get_skills(link_name))
     print profs
     top_prof = sort_skills(profs)[:3]
