@@ -34,8 +34,11 @@ coursera_link = get_coursera('coursera.csv')
 #another wab page:
 #link_name = "https://vk.com"
 #with skills, local link:
-link_name = "https://www.linkedin.com/profile/view?id=AAEAAAC19LgByHNr7FNDMhGz3de_IP1aj_JaA3o&authType=name&authToken=oyiR&trk=prof-sb-browse_map-name" # Romanko local
+#link_name = "https://www.linkedin.com/profile/view?id=AAEAAAC19LgByHNr7FNDMhGz3de_IP1aj_JaA3o&authType=name&authToken=oyiR&trk=prof-sb-browse_map-name" # Romanko local
 #link_name = "https://ca.linkedin.com/pub/kyle-macdonald/46/ba0/5b"
+link_name = 'https://www.linkedin.com/in/dimitr'
+
+#keyword_for_salary = 'C#'
 
 class Crawler:
     def __init__(self):
@@ -61,6 +64,28 @@ class Crawler:
       cj.load()
       self._br.set_cookiejar(cj)
 
+    def parse_table(self, url):
+      content = self._br.open(url).read()
+      soup = BeautifulSoup(content, 'html.parser')
+    
+      print 'Average saraly that You can have:'
+    # Average Salary
+      table = soup.find(id='salary_display_table')
+      for row in table.findAll("tr"):
+        for cell in row.findAll("td"):
+          x = cell.find(text=True)
+          if x is not None:
+            print x
+    # All salaries
+      print '\nAverage Salary of Jobs:'
+      table = soup.find(id='related_salary_display_table')
+      for row in table.findAll("tr"):
+        for cell in row.findAll("td"):
+          x = cell.find(text=True)
+          if x is not None:
+            print x
+      exit(0)
+
 
 def get_profession(skills):
     def match(prof_skills):
@@ -79,12 +104,16 @@ def sort_skills(d):
 
 if __name__ == '__main__':
   crawler = Crawler()
+ # crawler.parse_table(salary_link)
   if "linkedin" in link_name:
     if "profile/view" in link_name:
       crawler.login()
     profs = get_profession(crawler.get_skills(link_name))
     print profs
     top_prof = sort_skills(profs)[:3]
+    keyword_for_salary = top_prof[0]
+    salary_link = "http://www.indeed.com/salary?" + urllib.urlencode({'q1' : keyword_for_salary}) + "&l1=&tm=1"
+    crawler.parse_table(salary_link)
     print top_prof
     print 'For more information, please, click on name of profession:'
     for prof in top_prof:
