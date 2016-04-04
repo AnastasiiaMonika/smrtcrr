@@ -8,8 +8,8 @@ import requests
 import linkedinlogin
 import cookielib
 
-username = "mariamforminin@gmail.com"
-password = "mariam000"
+username = "YOUR_USERNAME"
+password = "YOUR_PASSWORD"
 
 def get_professions(path):
   with open(path, 'rb') as f:
